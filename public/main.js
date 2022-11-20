@@ -1,24 +1,44 @@
-function addUrl(){
-    var ul = document.getElementById("dynamic-list");
-    var candidate = document.getElementById("candidate");
-    var li = document.createElement("li");
-    li.setAttribute('id',candidate.value);
-    li.appendChild(document.createTextNode(candidate.value));
-    ul.appendChild(li);
+
+const getHashTagInfo = () => (window.location.hash).split('=')[1]?.split(',') ?? []
+const getHash = (value) => {
+    
+    const currentHashInfo = getHashTagInfo()
+   
+    if (currentHashInfo.length) {
+        console.log(currentHashInfo)
+        return `tag=${currentHashInfo},${value}`
+        
+    }
+
+    return `tag=${value}`
+}
+ 
+const input = document.getElementById('input')
+const list = document.getElementById('list')
+const button = document.getElementById('button')
+
+
+
+const setNodeFromHash = (value) => {
+    const node = document.createElement("li");
+    const textnode = document.createTextNode(value);
+    node.appendChild(textnode);
+    node.onclick = () => deleteElement(node)
+    list.appendChild(node)
 }
 
-function deleteUrl(){
-    var ul = document.getElementById("dynamic-list");
-    var candidate = document.getElementById("candidate");
-    var li = document.getElementById(candidate.value);
-    ul.removeChild(li);
+const deleteElement = (node) =>{
+    node.parentNode.removeChild(node)
+    window.location.hash = (window.location.hash).replace(node.innerText,'').replace(',,',',')
+}
+ 
+button.addEventListener('click', () => {
+    window.location.hash = getHash(input.value)
+    setNodeFromHash(input.value)
+})
+
+for (const info of getHashTagInfo()) {
+    setNodeFromHash(info)
 }
 
-function getURl(urlValue){
-    let urlValues = new URLSearchParams(window.location.search)
-    return urlValues.get(urlValue);
-}
-
-function loadUrl(){
-    history.pushState({},"",urlValue)
-}
+setupCounter(document.querySelector('#counter'))
